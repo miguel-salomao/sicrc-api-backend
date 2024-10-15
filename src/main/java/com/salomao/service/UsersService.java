@@ -51,4 +51,12 @@ public class UsersService {
     public UsersDto findById(Long id) {
         return mapUserModelToDto(usersRepository.findById(id));
     }
+
+    public UsersDto findByEmail(String email) {
+        return mapUserModelToDto(usersRepository.findByEmail(email));
+    }
+
+    public UsersDto findByName(String name) {
+        return mapUserModelToDto(usersRepository.findByName(name));
+    }
 }

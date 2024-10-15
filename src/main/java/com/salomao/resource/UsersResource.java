@@ -2,6 +2,7 @@ package com.salomao.resource;
 
 
 import com.salomao.dtos.UsersDto;
+import com.salomao.exception.NotFoundException;
 import com.salomao.service.UsersService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -24,7 +25,7 @@ public class UsersResource {
 
     @POST
     @Transactional
-    public Response createUser(UsersDto usersDto) {
+    public Response createUser(UsersDto usersDto) throws NotFoundException {
         try {
             usersService.createUser((usersDto));
             return Response.ok(usersDto, MediaType.APPLICATION_JSON_TYPE).build();
@@ -49,6 +50,19 @@ public class UsersResource {
         }
         try {
             return Response.ok(usersService.findById(id)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+@GET
+@Path("/name")
+    public Response findByName(@QueryParam("name") String name) throws NotFoundException {
+        if (name == null){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        try {
+            return Response.ok(usersService.findByName(name)).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();
