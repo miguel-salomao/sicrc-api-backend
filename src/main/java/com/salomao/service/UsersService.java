@@ -14,33 +14,13 @@ public class UsersService {
     @Inject
     private UsersRepository usersRepository;
 
+    public UsersService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
     public void createUser(UsersDto usersDto) {
         usersRepository.persist(mapUserDtoToEntity(usersDto));
     }
-
-    private UsersDto mapUserModelToDto(UsersModel usersModel) {
-        UsersDto usersDto = new UsersDto();
-
-        usersDto.setAge(usersModel.getAge());
-        usersDto.setEmail(usersModel.getEmail());
-        usersDto.setName(usersModel.getName());
-        usersDto.setPhone(usersModel.getPhone());
-        usersDto.setPassword(usersModel.getPassword());
-        usersDto.setRegistration(usersModel.getRegistration());
-        return usersDto;
-    }
-
-    private UsersModel mapUserDtoToEntity(UsersDto usersDto) {
-        UsersModel usersModel = new UsersModel();
-        usersModel.setAge(usersDto.getAge());
-        usersModel.setEmail(usersDto.getEmail());
-        usersModel.setName(usersDto.getName());
-        usersModel.setPassword(usersDto.getEmail());
-        usersModel.setPhone(usersDto.getPhone());
-        usersModel.setRegistration(usersDto.getRegistration());
-        return usersModel;
-    }
-
 
     public List<UsersModel> findAll(Integer page, Integer pageSize) {
         return usersRepository.findAll()
@@ -58,5 +38,44 @@ public class UsersService {
 
     public UsersDto findByName(String name) {
         return mapUserModelToDto(usersRepository.findByName(name));
+    }
+
+    public void deleteById(Long id) {
+        usersRepository.deleteById(id);
+    }
+
+    public void updateUsers(Long id, UsersDto usersDto) {
+        UsersModel users = usersRepository.findById(id);
+
+        users.setAge(usersDto.getAge());
+        users.setEmail(usersDto.getEmail());
+        users.setName(usersDto.getName());
+        users.setPhone(usersDto.getPhone());
+
+        usersRepository.persist(users);
+    }
+
+    private UsersDto mapUserModelToDto(UsersModel usersModel) {
+        UsersDto usersDto = new UsersDto();
+
+        usersDto.setAge(usersModel.getAge());
+        usersDto.setEmail(usersModel.getEmail());
+        usersDto.setName(usersModel.getName());
+        usersDto.setPhone(usersModel.getPhone());
+        usersDto.setPassword(usersModel.getPassword());
+        usersDto.setRegistration(usersModel.getRegistration());
+        return usersDto;
+    }
+
+    private UsersModel mapUserDtoToEntity(UsersDto usersDto) {
+        UsersModel usersModel = new UsersModel();
+
+        usersModel.setAge(usersDto.getAge());
+        usersModel.setEmail(usersDto.getEmail());
+        usersModel.setName(usersDto.getName());
+        usersModel.setPassword(usersDto.getPassword());
+        usersModel.setPhone(usersDto.getPhone());
+        usersModel.setRegistration(usersDto.getRegistration());
+        return usersModel;
     }
 }

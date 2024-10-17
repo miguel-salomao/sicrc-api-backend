@@ -3,6 +3,8 @@ package com.salomao.resource;
 
 import com.salomao.dtos.UsersDto;
 import com.salomao.service.UsersService;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -16,6 +18,8 @@ import java.util.logging.Logger;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@ApplicationScoped
+@Resource
 public class UsersResource {
 
     private final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
@@ -74,6 +78,46 @@ public class UsersResource {
             return Response.ok(usersService.findByName(name)).build();
         } catch (Exception e) {
             logger.info("Error find user not found " + name);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @GET
+    @Path("/email")
+    public Response findByEmail(@QueryParam("email") String email) {
+        logger.info("Accessed to get user " + email);
+        try {
+            return Response.ok(usersService.findByEmail(email)).build();
+        } catch (Exception e) {
+            logger.info("Error find user not found " + email);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @Path("/id")
+    @DELETE
+    @Transactional
+    public Response deleteById(Long id) {
+        logger.info("Accessed to deleting user " + id);
+        try {
+            usersService.deleteById(id);
+            return Response.noContent().build();
+        } catch (Exception e) {
+            logger.info("Error deleting user not found " + id);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @Path("/{id}")
+    @PUT
+    @Transactional
+    public Response updateUsers(@PathParam("id") Long id, UsersDto usersDto) {
+        logger.info("Accessed to update user " + id);
+        try {
+            usersService.updateUsers(id, (usersDto));
+            return Response.accepted().build();
+        } catch (Exception e) {
+            logger.info("Error updating user not found " + id);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }

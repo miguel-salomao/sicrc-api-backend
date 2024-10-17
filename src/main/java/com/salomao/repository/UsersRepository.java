@@ -27,4 +27,5 @@ public class UsersRepository implements PanacheRepository<UsersModel> {
         return find("id", id).firstResult();
     }
 
+
 }
